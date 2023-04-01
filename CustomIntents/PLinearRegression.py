@@ -73,9 +73,7 @@ class PLinearRegression:
     def load_model_from_csv(self, file_dir="test_model.csv"):
         with open(file_dir, "r") as csvfile:
             csvfile = csv.reader(csvfile)
-            counter = 0
-            for lines in csvfile:
-                counter += 1
+            for counter, lines in enumerate(csvfile, start=1):
                 if counter == 3:
                     self.result_a = float(lines[0])
                     self.result_b = float(lines[1])
@@ -83,8 +81,7 @@ class PLinearRegression:
                     print(f"Line info : {self.result_a} X + {self.result_b}")
 
     def make_prediction(self, x):
-        result = x * self.result_a + self.result_b
-        return result
+        return x * self.result_a + self.result_b
 
     @Ptimeit
     def algorythm_1(self, start_step=None, verbose=1, training_steps=10000, version1_1=False, plot_result=True):
@@ -149,10 +146,8 @@ class PLinearRegression:
         if plot_input_data:
             self.plot_input_data()
         self.getting_avarages()
-        if algorythm == "1" or algorythm == "1.1":
-            version1_1 = False
-            if algorythm == "1.1":
-                version1_1 = True
+        if algorythm in ["1", "1.1"]:
+            version1_1 = algorythm == "1.1"
             self.algorythm_1(start_step=start_step, verbose=verbose,
                              training_steps=training_steps,
                              version1_1=version1_1, plot_result=plot_result)
@@ -190,8 +185,7 @@ class PKNN:
         self.y_train = y
 
     def predict(self, x):
-        predictions = [self._predict(curent_x) for curent_x in x]
-        return predictions
+        return [self._predict(curent_x) for curent_x in x]
 
     def _predict(self, x):
         # fasele

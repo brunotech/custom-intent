@@ -98,10 +98,10 @@ class BinaryImageClassificator:
                     img = cv2.imread(image_path)
                     tip = imghdr.what(image_path)
                     if tip not in image_exts:
-                        print('Image not in ext list {}'.format(image_path))
+                        print(f'Image not in ext list {image_path}')
                         os.remove(image_path)
                 except Exception:
-                    print('Issue with image {}'.format(image_path))
+                    print(f'Issue with image {image_path}')
                     os.remove(image_path)
 
     def _load_data(self):
@@ -181,7 +181,7 @@ class BinaryImageClassificator:
     def _build_model(self, optimizer, model_type="s1"):
         print(f"model type : {model_type}")
         succsesful = False
-        if model_type == "s1" or model_type == "s1a":
+        if model_type in ["s1", "s1a"]:
             self.model = Sequential()
             self.model.add(Conv2D(16, (3, 3), 1, activation='relu', input_shape=(256, 256, 3)))
             self.model.add(MaxPooling2D())
@@ -343,18 +343,13 @@ class BinaryImageClassificator:
         current_dir = os.getcwd()
         parent_dir = os.path.dirname(current_dir)
         if self.logdir is None:
-            if Path('new_folder').is_dir():
-                self.logdir = "logs"
-            else:
+            if not Path('new_folder').is_dir():
                 path = os.path.join(parent_dir, "logs")
                 os.mkdir(path)
-                self.logdir = "logs"
-        else:
-            if Path(self.logdir).is_dir():
-                pass
-            else:
-                path = os.path.join(parent_dir, self.logdir)
-                os.mkdir(path)
+            self.logdir = "logs"
+        elif not Path(self.logdir).is_dir():
+            path = os.path.join(parent_dir, self.logdir)
+            os.mkdir(path)
 
     def train_model(self, epochs=20, model_type="s1", logdir=None, optimizer_type="adam", learning_rate=0.00001,
                     class_weight=None, prefetching=False, plot_model=True, validation_split=0.2, test_split=0):
@@ -445,7 +440,7 @@ class BinaryImageClassificator:
                             outputs=[gr.Label(label="class"),
                                      gr.Label(label="Accuracy")],
                             allow_flagging="never")
-        print(f"open http://localhost:7860 for viewing your model preview")
+        print("open http://localhost:7860 for viewing your model preview")
         demo.launch(share=share, inbrowser=inbrowser)
 
     def evaluate_model(self):
@@ -479,7 +474,7 @@ class BinaryImageClassificator:
 
                 if frame_count > 20:
                     fps = vs.stream.get(cv2.CAP_PROP_FPS)
-                    fps_text = "fps: " + str(np.round(fps, 2))
+                    fps_text = f"fps: {str(np.round(fps, 2))}"
                     cv2.putText(frame, fps_text, (460, 460), font, 1, font_color)
 
                 cv2.imshow("Frame", frame)

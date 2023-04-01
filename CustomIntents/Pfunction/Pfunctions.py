@@ -84,32 +84,28 @@ def Psqrt_approx(num, root=2, n_dec=10):
 
 # squre root with taylor series
 def fact(n):
-    if n == 1 or n == 0:
-        return 1
-    else:
-        return n * fact(n - 1)
+    return 1 if n in [1, 0] else n * fact(n - 1)
 
 
 def Psqrt_taylor_bin_coef(m, k):  # m choose k
     numerator = 1
-    for factor in range(0, k):
+    for factor in range(k):
         numerator = numerator * (m - factor)
     denominator = fact(k)
-    coef = numerator / denominator
-    return coef
+    return numerator / denominator
 
 
 def Psqrt_taylor(num):
     exp = len(str(num))
     x = (num / (10 ** exp)) - 1
-    sumation = 0
-    for term in range(10):
-        sumation += Psqrt_taylor_bin_coef(1 / 2, term) * (x ** term)
-    if exp % 2 == 0:
-        result = sumation * (10 ** (exp / 2))
-    else:
-        result = sumation * 3.16227766017 * (10 ** ((exp - 1) / 2))
-    return result
+    sumation = sum(
+        Psqrt_taylor_bin_coef(1 / 2, term) * (x**term) for term in range(10)
+    )
+    return (
+        sumation * (10 ** (exp / 2))
+        if exp % 2 == 0
+        else sumation * 3.16227766017 * (10 ** ((exp - 1) / 2))
+    )
 
 
 # kmm kamtarin mazrab moshtarak lcm
@@ -121,8 +117,7 @@ def Pkmm(firts, second) -> int:
         firts = second
         second = r
     gcd = int(second)
-    lcm = int((k1 * k2) / gcd)
-    return lcm
+    return int((k1 * k2) / gcd)
 
 
 # bmm bozorg tarin maghsoom alayh moshtarak ( gcd )
@@ -131,16 +126,13 @@ def Pbmm(first, second) -> int:
         r = first % second
         first = second
         second = r
-    gcd = second
-    return gcd
+    return second
 
 
 # fibonacci series
 @memorize
 def fibonacci(n) -> int:
-    if n < 2:
-        return n
-    return fibonacci(n - 1) + fibonacci(n - 2)
+    return n if n < 2 else fibonacci(n - 1) + fibonacci(n - 2)
 
 
 def fibFast1(n):
@@ -158,27 +150,17 @@ def fibFast2(num):
 
 
 def fib_smart(n):
-    if n >= 70:
-        return fibFast1(n)
-    else:
-        return fibFast2(n)
+    return fibFast1(n) if n >= 70 else fibFast2(n)
 
 
 def fibonacci_taghsim(n) -> int:
-    if n == 1:
-        a = 1
-    else:
-        a = fibonacci(n) / fibonacci(n - 1)
-    return a
+    return 1 if n == 1 else fibonacci(n) / fibonacci(n - 1)
 
 
 # e number
 
 def calculating_e(n) -> int:
-    e_value = 1
-    for i in range(n):
-        e_value += 1 / math.factorial(i + 1)
-    return e_value
+    return 1 + sum(1 / math.factorial(i + 1) for i in range(n))
 
 
 def calculating_e_pro(n, precision):
@@ -191,22 +173,19 @@ def calculating_e_pro(n, precision):
 
 
 def calculating_e_2(n):
-    e_value = ((1 + (1 / n)) ** n)
-    return e_value
+    return ((1 + (1 / n)) ** n)
 
 
 def calculating_e_2_pro(n, precision):
     with localcontext() as ctx:
         ctx.prec = precision  # "precision" digits precision
-        e_value = Decimal((Decimal(1) + Decimal((Decimal(1) / Decimal(n)))) ** Decimal(n))
-        return e_value
+        return Decimal((Decimal(1) + Decimal((Decimal(1) / Decimal(n)))) ** Decimal(n))
 
 
 def calculating_e_2_smart(digits):
     seed = Decimal(Decimal(10) ** (Decimal(digits - 1)))
     prc = digits
-    result = calculating_e_2_pro(seed, prc)
-    return result
+    return calculating_e_2_pro(seed, prc)
 
 
 def calculating_e_printing_every_step(n) -> int:
@@ -218,8 +197,7 @@ def calculating_e_printing_every_step(n) -> int:
 
 
 def e_number():
-    e_value = calculating_e(17)
-    return e_value
+    return calculating_e(17)
 
 
 # pi number
@@ -338,7 +316,7 @@ def pi_MonteCarlo_visiual(number_of_points):
     turtle.circle(length, -90)
 
     inside = 0
-    for i in range(0, number_of_points):
+    for _ in range(number_of_points):
         # get dot position
         x = random.uniform(0, length)
         y = random.uniform(0, length)
@@ -446,14 +424,13 @@ def pi_GregoryLeibniz_pro(reps, decimals):
 
 
 def pi_RamanujanSato_1(reps):
-    pi_sum = 0
-
-    for i in range(reps):
-        pi_sum += (math.factorial(4 * i) * (26390 * i + 1103)) / ((math.factorial(i) ** 4) * 396 ** (4 * i))
-
+    pi_sum = sum(
+        (math.factorial(4 * i) * (26390 * i + 1103))
+        / ((math.factorial(i) ** 4) * 396 ** (4 * i))
+        for i in range(reps)
+    )
     pi_sum *= (2 * math.sqrt(2) / (99 ** 2))
-    pi_value = 1 / pi_sum
-    return pi_value
+    return 1 / pi_sum
 
 
 def pi_RamanujanSato_pro(reps, decimals):
@@ -472,24 +449,21 @@ def pi_RamanujanSato_pro(reps, decimals):
 
 # simple golden ratio function
 def golden_ratio_1():
-    golden_ratio = (1 + math.sqrt(5)) / 2
-    return golden_ratio
+    return (1 + math.sqrt(5)) / 2
 
 
 def golden_ratio_1_pro(decimals):
     with localcontext() as ctx:
         ctx.prec = decimals
         sqrtOf5 = Decimal(5).sqrt()
-        golden_ratio = Decimal((1 + sqrtOf5) / 2)
-        return golden_ratio
+        return Decimal((1 + sqrtOf5) / 2)
 
 
 # golden ratio as limit of fibonacci taghsim
 def golden_ratio_2(seed):
     fn = fibonacci(seed)
     fn2 = fibonacci(seed - 1)
-    golden_ratio = fn / fn2
-    return golden_ratio
+    return fn / fn2
 
 
 def golden_ratio_2_pro(seed, decimals):
@@ -497,21 +471,18 @@ def golden_ratio_2_pro(seed, decimals):
         ctx.prec = decimals
         fn = Decimal(fibonacci(seed))
         fn2 = Decimal(fibonacci(seed - 1))
-        golden_ratio = fn / fn2
-        return golden_ratio
+        return fn / fn2
 
 
 def golden_ratio_2_smart(digits):
-    if digits < 350:
-        seed = int(((digits - 1) * 10) / 4)
-        golden_ratio = golden_ratio_2_pro(seed, digits)
-        return golden_ratio
-    else:
+    if digits >= 350:
         return False
+    seed = int(((digits - 1) * 10) / 4)
+    return golden_ratio_2_pro(seed, digits)
 
 
 def golden_ratio_3(value, times):
-    for i in range(times):
+    for _ in range(times):
         value = 1 / value
         value = value + 1
     return value
@@ -521,7 +492,7 @@ def golden_ratio_3_pro(value, times, decimals):
     with localcontext() as ctx:
         ctx.prec = decimals
         value = Decimal(value)
-        for i in range(times):
+        for _ in range(times):
             value = 1 / value
             value = value + 1
     return value
@@ -534,7 +505,7 @@ def golden_ratio_3_smart(decimals, times=0):
         value = 1.618033988749894
         ctx.prec = decimals
         value = Decimal(value)
-        for i in range(times):
+        for _ in range(times):
             value = 1 / value
             value = value + 1
     return value
@@ -577,8 +548,7 @@ def quadratic_solution(a, b, c):
         root2 = float(-b - math.sqrt(b ** 2 - 4 * a * c)) / (2 * a)
         return [root1, root2]
     elif discriminant == 0:
-        root1 = float(-b + math.sqrt(b ** 2 - 4 * a * c)) / (2 * a)
-        return root1
+        return float(-b + math.sqrt(b ** 2 - 4 * a * c)) / (2 * a)
     elif discriminant < 0:
         root1 = (-b + cmath.sqrt(b ** 2 - 4 * a * c)) / (2 * a)
         root2 = (-b - cmath.sqrt(b ** 2 - 4 * a * c)) / (2 * a)
@@ -599,18 +569,34 @@ def is_float(element: any) -> bool:
 # matrix oporatin
 
 def determinant2by2(array):
-    determinant = float((array[0, 0] * array[1, 1]) - (array[0, 1] * array[1, 0]))
-    return determinant
+    return float((array[0, 0] * array[1, 1]) - (array[0, 1] * array[1, 0]))
 
 
 def matrix_multiplication2by2(matrix1, matrix2):
-    result = np.array([
-        [((matrix1[0, 0] * matrix2[0, 0]) + (matrix1[0, 1] * matrix2[1, 0])),
-         ((matrix1[0, 0] * matrix2[0, 1]) + (matrix1[0, 1] * matrix2[1, 1]))],
-        [((matrix1[1, 0] * matrix2[0, 0]) + (matrix1[1, 1] * matrix2[1, 0])),
-         ((matrix1[1, 0] * matrix2[0, 1]) + (matrix1[1, 1] * matrix2[1, 1]))],
-    ])
-    return result
+    return np.array(
+        [
+            [
+                (
+                    (matrix1[0, 0] * matrix2[0, 0])
+                    + (matrix1[0, 1] * matrix2[1, 0])
+                ),
+                (
+                    (matrix1[0, 0] * matrix2[0, 1])
+                    + (matrix1[0, 1] * matrix2[1, 1])
+                ),
+            ],
+            [
+                (
+                    (matrix1[1, 0] * matrix2[0, 0])
+                    + (matrix1[1, 1] * matrix2[1, 0])
+                ),
+                (
+                    (matrix1[1, 0] * matrix2[0, 1])
+                    + (matrix1[1, 1] * matrix2[1, 1])
+                ),
+            ],
+        ]
+    )
 
 
 # ecualidean_distance

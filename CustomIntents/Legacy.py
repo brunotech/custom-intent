@@ -119,8 +119,6 @@ class ChatBot:
         self.lemmatizer = WordNetLemmatizer()
         if w_and_b:
             wandb.init(project=model_name)
-        if tensorboard:
-            pass
 
     def load_json_intents(self, intents: str):
         self.intents = json.loads(open(intents).read())

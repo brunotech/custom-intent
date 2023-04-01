@@ -16,11 +16,9 @@ class JsonIntents:
         self.json_file = json.loads(open(json_file_adress).read())
 
     def add_pattern_app(self, tag=None):
+        intents = self.json_file
         if tag is None:
-            intents = self.json_file
-            counter = 0
-
-            for _ in (intents["intents"]):
+            for counter, _ in enumerate(intents["intents"]):
                 while True:
                     new_term = input(intents["intents"][counter]["tag"] + " : ")
                     if new_term.upper() == "D":
@@ -33,15 +31,7 @@ class JsonIntents:
                         intents["intents"][counter]["patterns"] = list(intents["intents"][counter]["patterns"]).__add__(
                             [new_term])
                         print("added")
-                counter += 1
-
-            out_file = open(self.json_file_adress, "w")
-            json.dump(intents, out_file)
-            out_file.close()
-            print("intents updated ! ")
-            self.load_json_intents(self.json_file_adress)
         else:
-            intents = self.json_file
             tag_counter = 0
             for _ in (intents["intents"]):
                 if intents["intents"][tag_counter]["tag"] == tag:
@@ -62,29 +52,24 @@ class JsonIntents:
                         intents["intents"][tag_counter]["patterns"]).__add__([new_term])
                     print("added")
 
-            out_file = open(self.json_file_adress, "w")
+
+        with open(self.json_file_adress, "w") as out_file:
             json.dump(intents, out_file)
-            out_file.close()
-            print("intents updated ! ")
-            self.load_json_intents(self.json_file_adress)
+        print("intents updated ! ")
+        self.load_json_intents(self.json_file_adress)
 
     def delete_duplicate_app(self):
         intents = self.json_file
-        counter = 0
-
-        for _ in (intents["intents"]):
+        for counter, _ in enumerate(intents["intents"]):
             intents["intents"][counter]["patterns"] = list(
                 OrderedDict.fromkeys(intents["intents"][counter]["patterns"]))
-            counter += 1
-
-        out_file = open(self.json_file_adress, "w")
-        json.dump(intents, out_file)
-        out_file.close()
+        with open(self.json_file_adress, "w") as out_file:
+            json.dump(intents, out_file)
         self.load_json_intents(self.json_file_adress)
 
     def add_tag_app(self, tag=None, responses=None):
+        json_file = self.json_file
         if tag is None and responses is None:
-            json_file = self.json_file
             new_tag = input("what should the tag say ? ")
             responses = []
             while True:
@@ -93,25 +78,9 @@ class JsonIntents:
                     break
                 else:
                     responses.append(new_response)
-            json_file["intents"] = list(json_file["intents"]).__add__(
-                [{"tag": [new_tag], "patterns": [], "responses": responses}])
-            out_file = open(self.json_file_adress, "w")
-            json.dump(json_file, out_file)
-            out_file.close()
-            print("new tag added !")
-            self.load_json_intents(self.json_file_adress)
         elif tag is None:
-            json_file = self.json_file
             new_tag = input("what should the tag say ? ")
-            json_file["intents"] = list(json_file["intents"]).__add__(
-                [{"tag": [new_tag], "patterns": [], "responses": responses}])
-            out_file = open(self.json_file_adress, "w")
-            json.dump(json_file, out_file)
-            out_file.close()
-            print("new tag added !")
-            self.load_json_intents(self.json_file_adress)
         elif responses is None:
-            json_file = self.json_file
             new_tag = tag
             responses = []
             while True:
@@ -120,20 +89,12 @@ class JsonIntents:
                     break
                 else:
                     responses.append(new_response)
-            json_file["intents"] = list(json_file["intents"]).__add__(
-                [{"tag": [new_tag], "patterns": [], "responses": responses}])
-            out_file = open(self.json_file_adress, "w")
-            json.dump(json_file, out_file)
-            out_file.close()
-            print("new tag added !")
-            self.load_json_intents(self.json_file_adress)
         else:
-            json_file = self.json_file
             new_tag = tag
-            json_file["intents"] = list(json_file["intents"]).__add__(
-                [{"tag": [new_tag], "patterns": [], "responses": responses}])
-            out_file = open(self.json_file_adress, "w")
+
+        json_file["intents"] = list(json_file["intents"]).__add__(
+            [{"tag": [new_tag], "patterns": [], "responses": responses}])
+        with open(self.json_file_adress, "w") as out_file:
             json.dump(json_file, out_file)
-            out_file.close()
-            print("new tag added !")
-            self.load_json_intents(self.json_file_adress)
+        print("new tag added !")
+        self.load_json_intents(self.json_file_adress)
